@@ -1,0 +1,23 @@
+services:
+  # 1. FastAPI Python Backend
+  - type: web
+    name: kalaconnect-backend
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m app.main
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: PORT
+        value: 10000
+
+  # 2. Next.js Frontend
+  - type: web
+    name: kalaconnect-frontend
+    runtime: node
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_VERSION
+        value: 20.10.0
