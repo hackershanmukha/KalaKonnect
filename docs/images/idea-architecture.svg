@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FAF7F2" />
+      <stop offset="100%" stop-color="#F2EAE0" />
+    </linearGradient>
+    <linearGradient id="cardGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9C4221" />
+      <stop offset="100%" stop-color="#783017" />
+    </linearGradient>
+    <linearGradient id="cardGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2F6A4F" />
+      <stop offset="100%" stop-color="#1E4734" />
+    </linearGradient>
+    <linearGradient id="cardGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4C3D32" />
+      <stop offset="100%" stop-color="#31261E" />
+    </linearGradient>
+    <filter id="dropShadow" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-opacity="0.12" flood-color="#261E18" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="640" rx="24" fill="url(#bgGrad)" stroke="#E6DED3" stroke-width="2" />
+
+  <!-- Top Decorative Header -->
+  <g transform="translate(60, 45)">
+    <rect x="0" y="0" width="48" height="48" rx="14" fill="#9C4221" filter="url(#dropShadow)" />
+    <polygon points="24,14 27,21 34,24 27,27 24,34 21,27 14,24 21,21" fill="#FCD34D" />
+    <text x="62" y="30" font-family="serif, Georgia" font-size="28" font-weight="bold" fill="#261E18">KalaConnect AI</text>
+    <rect x="268" y="12" width="34" height="20" rx="5" fill="#9C4221" opacity="0.12" />
+    <text x="274" y="26" font-family="sans-serif" font-size="11" font-weight="bold" fill="#9C4221">AI</text>
+    <text x="62" y="47" font-family="sans-serif" font-size="13" font-weight="500" fill="#786C5E">
+      Core Idea &amp; Architectural Flow: Empowering Traditional Indian Artisans with AI &amp; Machine Learning
+    </text>
+  </g>
+
+  <!-- 3 Pillar Columns (The Idea) -->
+
+  <!-- PILLAR 1: ARTISAN AUTHENTICATION -->
+  <g transform="translate(60, 130)" filter="url(#dropShadow)">
+    <rect width="335" height="420" rx="20" fill="#FFFFFF" stroke="#E6DED3" stroke-width="1.5" />
+    <path d="M 0,20 Q 0,0 20,0 L 315,0 Q 335,0 335,20 L 335,65 L 0,65 Z" fill="url(#cardGrad1)" />
+    <text x="24" y="38" font-family="sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">1. Workshop &amp; GI Verification</text>
+    <text x="24" y="55" font-family="sans-serif" font-size="11" fill="#FCD34D">Multimodal AI Inspection (Gemini)</text>
+
+    <!-- Inside Content -->
+    <g transform="translate(20, 85)">
+      <rect width="295" height="60" rx="12" fill="#FAF7F2" stroke="#E6DED3" />
+      <text x="14" y="24" font-family="sans-serif" font-size="12" font-weight="bold" fill="#261E18">📸 Evidence Submission</text>
+      <text x="14" y="44" font-family="sans-serif" font-size="10.5" fill="#786C5E">Workshop lathes, looms, natural raw pigments</text>
+
+      <rect y="72" width="295" height="65" rx="12" fill="#FAF7F2" stroke="#E6DED3" />
+      <text x="14" y="96" font-family="sans-serif" font-size="12" font-weight="bold" fill="#261E18">🤖 AI Authenticity Assistant</text>
+      <text x="14" y="116" font-family="sans-serif" font-size="10.5" fill="#786C5E">Detects factory molds &amp; fake plastic replicas</text>
+      <text x="14" y="130" font-family="sans-serif" font-size="10.5" fill="#9C4221">Corroborates GI geographic heritage tag</text>
+
+      <rect y="150" width="295" height="60" rx="12" fill="#FAF7F2" stroke="#E6DED3" />
+      <text x="14" y="174" font-family="sans-serif" font-size="12" font-weight="bold" fill="#261E18">🛡️ Governance Audit Ledger</text>
+      <text x="14" y="194" font-family="sans-serif" font-size="10.5" fill="#786C5E">Admin certification &amp; tamper-proof GI badge</text>
+
+      <rect y="222" width="295" height="85" rx="12" fill="#2F6A4F" opacity="0.08" />
+      <rect y="222" width="295" height="85" rx="12" fill="none" stroke="#2F6A4F" stroke-width="1.2" stroke-dasharray="3,3" />
+      <text x="14" y="246" font-family="sans-serif" font-size="11.5" font-weight="bold" fill="#2F6A4F">✓ Certified Artisan Seal Granted</text>
+      <text x="14" y="266" font-family="sans-serif" font-size="10.5" fill="#3D3128">Independent digital storefront activated</text>
+      <text x="14" y="282" font-family="sans-serif" font-size="10.5" fill="#786C5E">Direct customer remittance guaranteed</text>
+    </g>
+  </g>
+
+  <!-- PILLAR 2: DIRECT COMMERCE & IN-APP REPLIES -->
+  <g transform="translate(432, 130)" filter="url(#dropShadow)">
+    <rect width="335" height="420" rx="20" fill="#FFFFFF" stroke="#E6DED3" stroke-width="1.5" />
+    <path d="M 0,20 Q 0,0 20,0 L 315,0 Q 335,0 335,20 L 335,65 L 0,65 Z" fill="url(#cardGrad2)" />
+    <text x="24" y="38" font-family="sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">2. Direct Artisan Discovery</text>
+    <text x="24" y="55" font-family="sans-serif" font-size="11" fill="#A7F3D0">Zero Middlemen • 100% Direct Remittance</text>
+
+    <!-- Inside Content -->
+    <g transform="translate(20, 85)">
+      <rect width="295" height="60" rx="12" fill="#FAF7F2" stroke="#E6DED3" />
+      <text x="14" y="24" font-family="sans-serif" font-size="12" font-weight="bold" fill="#261E18">🛍️ Dual Discovery Marketplace</text>
+      <text x="14" y="44" font-family="sans-serif" font-size="10.5" fill="#786C5E">Tab 1: Artisan Stores | Tab 2: Products</text>
+
+      <rect y="72" width="295" height="65" rx="12" fill="#FAF7F2" stroke="#E6DED3" />
+      <text x="14" y="96" font-family="sans-serif" font-size="12" font-weight="bold" fill="#261E18">💬 In-App Custom Inquiries</text>
+      <text x="14" y="116" font-family="sans-serif" font-size="10.5" fill="#786C5E">Buyers contact artisans for custom gifts &amp; sizes</text>
+      <text x="14" y="130" font-family="sans-serif" font-size="10.5" fill="#2F6A4F">Direct artisan-to-buyer messaging channel</text>
+
+      <rect y="150" width="295" height="60" rx="12" fill="#FAF7F2" stroke="#E6DED3" />
+      <text x="14" y="174" font-family="sans-serif" font-size="12" font-weight="bold" fill="#261E18">📦 1-Vendor Craft Fulfillment</text>
+      <text x="14" y="194" font-family="sans-serif" font-size="10.5" fill="#786C5E">Safe packaging with artisan workshop dispatch</text>
+
+      <rect y="222" width="295" height="85" rx="12" fill="#9C4221" opacity="0.08" />
+      <rect y="222" width="295" height="85" rx="12" fill="none" stroke="#9C4221" stroke-width="1.2" stroke-dasharray="3,3" />
+      <text x="14" y="246" font-family="sans-serif" font-size="11.5" font-weight="bold" fill="#9C4221">✓ Direct Remittance Impact</text>
+      <text x="14" y="266" font-family="sans-serif" font-size="10.5" fill="#3D3128">Artisans earn up to 3.5x higher margins</text>
+      <text x="14" y="282" font-family="sans-serif" font-size="10.5" fill="#786C5E">Direct communication establishes lifetime patrons</text>
+    </g>
+  </g>
+
+  <!-- PILLAR 3: ML DEMAND FORECASTING & SEASONAL INTELLIGENCE -->
+  <g transform="translate(804, 130)" filter="url(#dropShadow)">
+    <rect width="335" height="420" rx="20" fill="#FFFFFF" stroke="#E6DED3" stroke-width="1.5" />
+    <path d="M 0,20 Q 0,0 20,0 L 315,0 Q 335,0 335,20 L 335,65 L 0,65 Z" fill="url(#cardGrad3)" />
+    <text x="24" y="38" font-family="sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">3. ML Business Intelligence</text>
+    <text x="24" y="55" font-family="sans-serif" font-size="11" fill="#FCD34D">Pandas • Scikit-learn • Festival Surges</text>
+
+    <!-- Inside Content -->
+    <g transform="translate(20, 85)">
+      <rect width="295" height="60" rx="12" fill="#FAF7F2" stroke="#E6DED3" />
+      <text x="14" y="24" font-family="sans-serif" font-size="12" font-weight="bold" fill="#261E18">📈 4-Week Demand Forecasting</text>
+      <text x="14" y="44" font-family="sans-serif" font-size="10.5" fill="#786C5E">Predicts unit sales &amp; prevents stockouts</text>
+
+      <rect y="72" width="295" height="65" rx="12" fill="#FAF7F2" stroke="#E6DED3" />
+      <text x="14" y="96" font-family="sans-serif" font-size="12" font-weight="bold" fill="#261E18">🪔 Indian Festival Surge Engine</text>
+      <text x="14" y="116" font-family="sans-serif" font-size="10.5" fill="#786C5E">Diwali, Sankranti, Dussehra spike alerts</text>
+      <text x="14" y="130" font-family="sans-serif" font-size="10.5" fill="#9C4221">Raw material batch procurement advice</text>
+
+      <rect y="150" width="295" height="60" rx="12" fill="#FAF7F2" stroke="#E6DED3" />
+      <text x="14" y="174" font-family="sans-serif" font-size="12" font-weight="bold" fill="#261E18">⚙️ AI Production Planner</text>
+      <text x="14" y="194" font-family="sans-serif" font-size="10.5" fill="#786C5E">Daily capacity matching &amp; wood seasoning plan</text>
+
+      <rect y="222" width="295" height="85" rx="12" fill="#4A3E31" opacity="0.08" />
+      <rect y="222" width="295" height="85" rx="12" fill="none" stroke="#4A3E31" stroke-width="1.2" stroke-dasharray="3,3" />
+      <text x="14" y="246" font-family="sans-serif" font-size="11.5" font-weight="bold" fill="#261E18">✓ Conversational AI Advisor</text>
+      <text x="14" y="266" font-family="sans-serif" font-size="10.5" fill="#3D3128">Database-grounded conversational assistant</text>
+      <text x="14" y="282" font-family="sans-serif" font-size="10.5" fill="#786C5E">Zero-hallucination business recommendations</text>
+    </g>
+  </g>
+
+  <!-- Bottom Footer Impact Bar -->
+  <g transform="translate(60, 575)">
+    <rect width="1079" height="38" rx="12" fill="#261E18" />
+    <text x="24" y="24" font-family="sans-serif" font-size="12" font-weight="bold" fill="#FCD34D">
+      MISSION:
+    </text>
+    <text x="96" y="24" font-family="sans-serif" font-size="12" fill="#FFFFFF">
+      Protecting 400+ year ancestral handicraft traditions with AI Authenticity, Direct Fair Remittance &amp; Predictive Demand Intelligence.
+    </text>
+  </g>
+</svg>
