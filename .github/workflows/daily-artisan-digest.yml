@@ -1,0 +1,37 @@
+name: Daily Artisan Digest Automation
+
+on:
+  schedule:
+    # Runs daily at 03:30 UTC (09:00 AM IST)
+    - cron: '30 3 * * *'
+  workflow_dispatch:
+    # Allows manual one-click trigger from GitHub Actions UI
+
+jobs:
+  run-digest-automation:
+    name: Execute Daily Artisan Automation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run Daily Workshop Automation & Notification Pipeline
+        run: |
+          python backend/scripts/daily_artisan_digest.py
+
+      - name: Archive Automation Digest Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-artisan-digest
+          path: reports/latest_artisan_digest.md
+          retention-days: 14

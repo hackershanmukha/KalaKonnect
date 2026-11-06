@@ -40,3 +40,45 @@ def get_historical_sales_trends(
         "total_recorded_transactions": len(sales)
     }
 
+@router.post("/automation/run-digest")
+def trigger_daily_automation_digest(db: Session = Depends(get_db)):
+    from ..models import Order, Inventory, Notification, Store, Product
+    from datetime import datetime
+
+    stores = db.query(Store).all()
+    digest_results = []
+
+    for st in stores:
+        pending_orders = db.query(Order).filter(
+            Order.store_id == st.id,
+            Order.status.in_(["new", "accepted", "in_production"])
+        ).count()
+        low_stock_items = db.query(Inventory).filter(
+            Inventory.store_id == st.id,
+            Inventory.current_stock <= 10
+        ).all()
+
+        msg = f"Daily Workshop Automation: {pending_orders} active craft orders in queue. {len(low_stock_items)} items near threshold for safe stock replenishment."
+        db.add(Notification(
+            user_id=st.vendor_id,
+            title="Daily Artisan Automation Digest",
+            message=msg,
+            link="/vendor/dashboard"
+        ))
+
+        digest_results.append({
+            "store_id": st.id,
+            "store_name": st.name,
+            "active_orders": pending_orders,
+            "low_stock_items": len(low_stock_items)
+        })
+
+    db.commit()
+    return {
+        "success": True,
+        "automated_at": datetime.utcnow().isoformat(),
+        "stores_processed": len(stores),
+        "results": digest_results,
+        "message": f"Automated daily digest successfully generated and dispatched to {len(stores)} artisan workshops."
+    }
+

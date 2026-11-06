@@ -1,0 +1,65 @@
+name: KalaConnect CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-frontend:
+    name: Build & Verify Next.js App
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: frontend/package.json
+
+      - name: Install Frontend Dependencies
+        working-directory: frontend
+        run: npm install
+
+      - name: Build Next.js Application
+        working-directory: frontend
+        run: npm run build
+
+  test-backend:
+    name: Test & Verify FastAPI Backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Validate Backend Modules & SQLite Database Models
+        run: |
+          python -c "import app.main; print('App root entrypoint verified.')"
+          python -c "from backend.app.database import engine, Base; from backend.app import models; print('Database models initialized.')"
+          python -c "import backend.app.main; print('FastAPI application routes and middleware verified.')"
+
+  deployment-healthcheck:
+    name: Automated Deployment Ready Check
+    needs: [build-frontend, test-backend]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Report Build Status
+        run: |
+          echo "KalaConnect CI/CD verification succeeded for commit ${{ github.sha }}."
+          echo "Repository is ready for zero-downtime deployment on Render & Vercel."

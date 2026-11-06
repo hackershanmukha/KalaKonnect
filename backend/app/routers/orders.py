@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from ..database import get_db
 from ..models import (
     Order, OrderItem, Cart, CartItem, Product, Store, Customer,
-    Inventory, SalesHistory, User
+    Inventory, SalesHistory, User, Notification
 )
 from ..schemas import (
     CartOut, CartItemOut, CartItemAdd, OrderCreate, OrderOut,
@@ -224,6 +224,23 @@ def checkout(
         db.delete(item)
 
     store.total_sales_count += 1
+
+    # Automated Notification for Customer
+    db.add(Notification(
+        user_id=current_user.id,
+        title="Order Placed Successfully",
+        message=f"Order {order.order_number} confirmed with {store.name}. Estimated dispatch: {dispatch_date.strftime('%d %b %Y')}.",
+        link=f"/orders?placed={order.order_number}"
+    ))
+
+    # Automated Notification for Vendor
+    db.add(Notification(
+        user_id=store.vendor_id,
+        title="New Order Received!",
+        message=f"New order {order.order_number} received for ₹{order.total_amount:,.2f}. Ready for acceptance and production.",
+        link="/vendor/dashboard"
+    ))
+
     db.commit()
     db.refresh(order)
 
@@ -367,10 +384,28 @@ def update_order_status(
     if status_update.estimated_dispatch_date:
         order.estimated_dispatch_date = status_update.estimated_dispatch_date
 
+    cust_user = order.customer.user if order.customer else None
+
+    # Automated Notification Dispatch
+    status_messages = {
+        "accepted": f"Master Artisan {store.name} has accepted Order {order.order_number}. Raw material seasoning started.",
+        "in_production": f"Order {order.order_number} is now in production. Traditional carving and lacquering underway.",
+        "ready_for_dispatch": f"Order {order.order_number} has completed quality check and is packed with authentic GI tag documentation.",
+        "shipped": f"Order {order.order_number} has been dispatched! Your handmade craft package is in transit via India Post Speed Post.",
+        "delivered": f"Order {order.order_number} has been delivered. Thank you for supporting authentic GI Indian artisans!"
+    }
+
+    if cust_user and status_update.status in status_messages:
+        db.add(Notification(
+            user_id=cust_user.id,
+            title=f"Order Update: {status_update.status.replace('_', ' ').title()}",
+            message=status_messages[status_update.status],
+            link="/orders"
+        ))
+
     db.commit()
     db.refresh(order)
 
-    cust_user = order.customer.user if order.customer else None
     items_out = [
         OrderItemOut(
             id=oi.id,
@@ -400,4 +435,24 @@ def update_order_status(
         created_at=order.created_at,
         items=items_out
     )
+
+@router.get("/notifications")
+def get_user_notifications(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    notifs = db.query(Notification).filter(Notification.user_id == current_user.id).order_by(Notification.created_at.desc()).limit(15).all()
+    if not notifs:
+        notifs = db.query(Notification).order_by(Notification.created_at.desc()).limit(8).all()
+    return [
+        {
+            "id": n.id,
+            "title": n.title,
+            "message": n.message,
+            "link": n.link or "/orders",
+            "is_read": n.is_read,
+            "created_at": n.created_at.strftime("%b %d, %I:%M %p") if n.created_at else "Just now"
+        }
+        for n in notifs
+    ]
 

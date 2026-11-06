@@ -134,6 +134,55 @@ const persistOrders = (orders: any[]) => {
   }
 };
 
+let fallbackNotifications: any[] = [
+  {
+    id: "notif-1",
+    title: "Order Placed Successfully",
+    message: "Order #KC-20261105-7267 has been confirmed with Etikoppaka Wooden Crafts. Lead time: 5 days.",
+    link: "/orders",
+    is_read: false,
+    created_at: "Just now"
+  },
+  {
+    id: "notif-2",
+    title: "Artisan Production Milestone",
+    message: "Order #KC-20261104-5182 has entered production: natural lac-dye heating and lathe spinning in progress.",
+    link: "/orders",
+    is_read: true,
+    created_at: "2 hours ago"
+  },
+  {
+    id: "notif-3",
+    title: "AI Demand Surge Detected",
+    message: "Automated forecast: 42% demand increase projected for traditional woodcrafts ahead of upcoming festival season.",
+    link: "/vendor/dashboard",
+    is_read: true,
+    created_at: "1 day ago"
+  }
+];
+
+const getStoredNotifications = (): any[] => {
+  if (typeof window !== "undefined") {
+    try {
+      const stored = localStorage.getItem("kalaconnect_notifications_cache");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {}
+  }
+  return fallbackNotifications;
+};
+
+const persistNotifications = (notifs: any[]) => {
+  fallbackNotifications = notifs;
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem("kalaconnect_notifications_cache", JSON.stringify(notifs));
+    } catch {}
+  }
+};
+
 let fallbackInquiries: any[] = [
   {
     id: "inq-1",
@@ -445,6 +494,10 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
     return getStoredOrders();
   }
 
+  if (urlPath === "/orders/notifications") {
+    return getStoredNotifications();
+  }
+
   if (urlPath.startsWith("/orders/") && urlPath.endsWith("/status")) {
     const parts = urlPath.split("/");
     const orderId = parts[2];
@@ -455,6 +508,19 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
     if (order) {
       order.status = body.status || order.status;
       persistOrders(currentOrders);
+
+      // Automated notification on status progress
+      const currentNotifs = getStoredNotifications();
+      currentNotifs.unshift({
+        id: `notif-${Date.now()}`,
+        title: `Automated Status Alert: ${String(body.status).toUpperCase()}`,
+        message: `Order #${order.order_number} has progressed to stage: ${String(body.status).replace("_", " ").toUpperCase()}. Workshop records and dispatch tracking synchronized.`,
+        link: "/orders",
+        is_read: false,
+        created_at: "Just now"
+      });
+      persistNotifications(currentNotifs);
+
       return order;
     }
     return { success: true, status: body.status };
@@ -516,6 +582,18 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
     // Store in persisted orders so both vendor and customer immediately see it across reloads
     const allOrders = [newOrder, ...getStoredOrders().filter((o) => o.id !== newOrder.id)];
     persistOrders(allOrders);
+
+    // Automated Notification Dispatch for order placement
+    const currentNotifs = getStoredNotifications();
+    currentNotifs.unshift({
+      id: `notif-${Date.now()}`,
+      title: "Order Confirmed & Production Queued",
+      message: `Order #${newOrder.order_number} confirmed with ${newOrder.store_name}. Handcraft lead time scheduled for direct artisan dispatch.`,
+      link: `/orders?placed=${newOrder.order_number}`,
+      is_read: false,
+      created_at: "Just now"
+    });
+    persistNotifications(currentNotifs);
 
     // Clear cart
     fallbackCart.items = [];
