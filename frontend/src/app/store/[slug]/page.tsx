@@ -310,7 +310,7 @@ export default function ArtisanStorefront() {
                   <div>
                     <p className="text-[10px] text-[#8C7E6F] uppercase font-semibold">Artisan Price</p>
                     <p className="text-lg font-serif font-bold text-[#261E18]">
-                      ₹{prod.price.toLocaleString("en-IN")}
+                      ₹{Number(prod.price || 0).toLocaleString("en-IN")}
                     </p>
                   </div>
 

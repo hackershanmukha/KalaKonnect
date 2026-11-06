@@ -69,7 +69,8 @@ function CheckoutContent() {
       });
 
       await refreshCart();
-      router.push(`/orders?placed=${order.order_number}`);
+      const placedNumber = order?.order_number || order?.id || "KC-ORDER";
+      router.push(`/orders?placed=${encodeURIComponent(placedNumber)}`);
     } catch (err: any) {
       alert(err.message || "Could not place order");
       setIsSubmitting(false);
@@ -219,23 +220,26 @@ function CheckoutContent() {
           <h3 className="font-serif text-lg font-bold text-[#261E18]">Cart Items</h3>
 
           <div className="space-y-3 divide-y divide-[#F0EBE1] text-xs">
-            {cart.items.map((item: any) => (
-              <div key={item.id} className="pt-2 flex justify-between items-center">
-                <div className="pr-2">
-                  <p className="font-semibold text-[#261E18]">{item.product_name}</p>
-                  <p className="text-[11px] text-[#786C5E]">Qty: {item.quantity}</p>
+            {(Array.isArray(cart.items) ? cart.items : []).map((item: any, idx: number) => {
+              const lineTotal = Number(item.line_total || (item.product_price * item.quantity) || 0);
+              return (
+                <div key={item.id || idx} className="pt-2 flex justify-between items-center">
+                  <div className="pr-2">
+                    <p className="font-semibold text-[#261E18]">{item.product_name || "Handcrafted Craft"}</p>
+                    <p className="text-[11px] text-[#786C5E]">Qty: {item.quantity || 1}</p>
+                  </div>
+                  <span className="font-bold text-[#261E18] shrink-0">
+                    ₹{lineTotal.toLocaleString("en-IN")}
+                  </span>
                 </div>
-                <span className="font-bold text-[#261E18] shrink-0">
-                  ₹{item.line_total.toLocaleString("en-IN")}
-                </span>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <div className="pt-4 border-t border-[#E6DED3] space-y-2 text-xs">
             <div className="flex justify-between text-[#615447]">
               <span>Subtotal</span>
-              <span>₹{cart.total_amount.toLocaleString("en-IN")}</span>
+              <span>₹{Number(cart.total_amount || 0).toLocaleString("en-IN")}</span>
             </div>
             <div className="flex justify-between text-[#2F6A4F] font-semibold">
               <span>Artisan Direct Courier</span>
@@ -244,7 +248,7 @@ function CheckoutContent() {
             <div className="flex justify-between text-base font-bold text-[#261E18] pt-2 border-t border-[#F0EBE1]">
               <span>Payable Total</span>
               <span className="text-[#9C4221] font-serif">
-                ₹{cart.total_amount.toLocaleString("en-IN")}
+                ₹{Number(cart.total_amount || 0).toLocaleString("en-IN")}
               </span>
             </div>
           </div>

@@ -127,7 +127,7 @@ export default function CartPage() {
                     {item.product_name}
                   </h3>
                   <p className="text-xs text-[#786C5E]">
-                    Unit Price: ₹{item.product_price.toLocaleString("en-IN")} × {item.quantity}
+                    Unit Price: ₹{Number(item.product_price || 0).toLocaleString("en-IN")} × {item.quantity}
                   </p>
                   {item.customization_notes && (
                     <p className="text-[11px] text-[#9C4221] mt-1 italic">
@@ -139,7 +139,7 @@ export default function CartPage() {
 
               <div className="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-0 border-[#F0EBE1]">
                 <p className="font-serif text-base font-bold text-[#261E18]">
-                  ₹{item.line_total.toLocaleString("en-IN")}
+                  ₹{Number(item.line_total || (item.product_price * item.quantity) || 0).toLocaleString("en-IN")}
                 </p>
                 <button
                   onClick={() => handleRemove(item.id)}
@@ -160,7 +160,7 @@ export default function CartPage() {
           <div className="space-y-3 text-xs text-[#615447] pb-4 border-b border-[#F0EBE1]">
             <div className="flex justify-between">
               <span>Subtotal ({cart.item_count} items)</span>
-              <span className="font-bold text-[#261E18]">₹{cart.total_amount.toLocaleString("en-IN")}</span>
+              <span className="font-bold text-[#261E18]">₹{Number(cart.total_amount || 0).toLocaleString("en-IN")}</span>
             </div>
             <div className="flex justify-between text-[#2F6A4F]">
               <span>Handcrafted Care Packaging</span>
@@ -175,7 +175,7 @@ export default function CartPage() {
           <div className="flex justify-between items-baseline">
             <span className="text-sm font-bold text-[#261E18]">Total Amount</span>
             <span className="font-serif text-2xl font-bold text-[#9C4221]">
-              ₹{cart.total_amount.toLocaleString("en-IN")}
+              ₹{Number(cart.total_amount || 0).toLocaleString("en-IN")}
             </span>
           </div>
 

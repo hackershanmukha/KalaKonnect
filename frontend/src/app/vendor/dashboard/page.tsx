@@ -552,21 +552,24 @@ export default function VendorDashboardPage() {
                     </div>
                     <div className="flex items-center space-x-3">
                       <span className="font-serif text-base font-bold text-[#9C4221]">
-                        ₹{o.total_amount.toLocaleString("en-IN")}
+                        ₹{Number(o.total_amount || 0).toLocaleString("en-IN")}
                       </span>
                       <span className="px-2.5 py-1 rounded-full bg-stone-100 text-[#4A3E31] font-bold">
-                        {o.status.toUpperCase()}
+                        {(o.status || "NEW").toUpperCase()}
                       </span>
                     </div>
                   </div>
 
                   <div className="text-xs space-y-1">
-                    {o.items?.map((item: any) => (
-                      <div key={item.id} className="flex justify-between">
-                        <span>{item.quantity} × {item.product_name}</span>
-                        <span className="font-bold">₹{item.total_price.toLocaleString("en-IN")}</span>
-                      </div>
-                    ))}
+                    {(Array.isArray(o.items) ? o.items : []).map((item: any, idx: number) => {
+                      const itemTot = Number(item.total_price || ((item.unit_price || item.product_price || 0) * (item.quantity || 1)) || 0);
+                      return (
+                        <div key={item.id || idx} className="flex justify-between">
+                          <span>{item.quantity || 1} × {item.product_name || "Handcrafted Craft"}</span>
+                          <span className="font-bold">₹{itemTot.toLocaleString("en-IN")}</span>
+                        </div>
+                      );
+                    })}
                   </div>
 
                   {/* Status Progression Toolbar */}

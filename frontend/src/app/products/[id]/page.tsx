@@ -159,7 +159,7 @@ export default function ProductDetailPage() {
           {/* Price display */}
           <div className="pt-2 pb-4 border-y border-[#E6DED3] flex items-baseline space-x-3">
             <span className="text-3xl font-serif font-bold text-[#261E18]">
-              ₹{product.price.toLocaleString("en-IN")}
+              ₹{Number(product.price || 0).toLocaleString("en-IN")}
             </span>
             <span className="text-xs text-[#786C5E]">Taxes included • Direct artisan price</span>
           </div>

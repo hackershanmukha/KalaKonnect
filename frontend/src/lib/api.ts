@@ -46,6 +46,7 @@ let fallbackOrders: any[] = [
         product_name: "Kondapalli Bullock Cart with Farmers Tableau",
         quantity: 1,
         unit_price: 1850.0,
+        product_price: 1850.0,
         total_price: 1850.0,
         customization_notes: "Festival gift packaging requested",
       },
@@ -73,6 +74,7 @@ let fallbackOrders: any[] = [
         product_name: "Etikoppaka Hand-Turned Balancing Acrobat Toy",
         quantity: 2,
         unit_price: 649.0,
+        product_price: 649.0,
         total_price: 1298.0,
         customization_notes: "Personalized inscription with family name",
       },
@@ -100,12 +102,37 @@ let fallbackOrders: any[] = [
         product_name: "Etikoppaka Wooden Toy Train Set (5 Carriages)",
         quantity: 1,
         unit_price: 1290.0,
+        product_price: 1290.0,
         total_price: 1290.0,
         customization_notes: "Festive lacquer finish",
       },
     ],
   },
 ];
+
+const getStoredOrders = (): any[] => {
+  if (typeof window !== "undefined") {
+    try {
+      const stored = localStorage.getItem("kalaconnect_orders_cache");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      }
+    } catch {}
+  }
+  return fallbackOrders;
+};
+
+const persistOrders = (orders: any[]) => {
+  fallbackOrders = orders;
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem("kalaconnect_orders_cache", JSON.stringify(orders));
+    } catch {}
+  }
+};
 
 let fallbackInquiries: any[] = [
   {
@@ -411,11 +438,11 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
   }
 
   if (urlPath === "/orders/vendor/my-orders") {
-    return fallbackOrders;
+    return getStoredOrders();
   }
 
   if (urlPath === "/orders/my-orders") {
-    return fallbackOrders;
+    return getStoredOrders();
   }
 
   if (urlPath.startsWith("/orders/") && urlPath.endsWith("/status")) {
@@ -423,9 +450,11 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
     const orderId = parts[2];
     let body: any = {};
     try { body = JSON.parse(options.body as string); } catch {}
-    const order = fallbackOrders.find((o) => o.id === orderId || o.order_number === orderId);
+    const currentOrders = getStoredOrders();
+    const order = currentOrders.find((o) => o.id === orderId || o.order_number === orderId);
     if (order) {
       order.status = body.status || order.status;
+      persistOrders(currentOrders);
       return order;
     }
     return { success: true, status: body.status };
@@ -437,6 +466,35 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
 
     const orderId = `ord-${Date.now()}`;
     const orderNum = `KC-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${Math.floor(1000 + Math.random() * 9000)}`;
+    const itemsList = fallbackCart.items.length > 0 ? fallbackCart.items.map((i: any) => {
+      const unit = Number(i.product_price || 0);
+      const qty = Number(i.quantity || 1);
+      const lineTot = Number(i.line_total || (unit * qty));
+      return {
+        id: `oi-${i.id}`,
+        product_id: i.product_id,
+        product_name: i.product_name,
+        unit_price: unit,
+        product_price: unit,
+        quantity: qty,
+        total_price: lineTot,
+        customization_notes: i.customization_notes || "Handcrafted traditional finish",
+      };
+    }) : [
+      {
+        id: `oi-${Date.now()}`,
+        product_id: "prod-1",
+        product_name: "Handmade Regional Craft Order",
+        quantity: 1,
+        unit_price: Number(fallbackCart.total_amount || 1850.0),
+        product_price: Number(fallbackCart.total_amount || 1850.0),
+        total_price: Number(fallbackCart.total_amount || 1850.0),
+        customization_notes: "Handcrafted traditional finish",
+      }
+    ];
+
+    const totalAmt = itemsList.reduce((sum, item) => sum + item.total_price, 0);
+
     const newOrder = {
       id: orderId,
       order_number: orderNum,
@@ -446,33 +504,18 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
       store_id: fallbackCart.store_id || body.store_id || "store-1",
       store_name: fallbackCart.store_name || "Etikoppaka Wooden Crafts",
       status: "new",
-      total_amount: fallbackCart.total_amount || 1850.0,
+      total_amount: totalAmt,
       payment_status: "simulated_paid",
       payment_method: body.payment_method || "simulated_upi",
       delivery_address: body.delivery_address || "Flat 402, Heritage Residency, Indiranagar, Bengaluru, Karnataka - 560038",
       estimated_dispatch_date: new Date(Date.now() + 6 * 86400000).toISOString(),
       created_at: new Date().toISOString(),
-      items: fallbackCart.items.length > 0 ? fallbackCart.items.map((i) => ({
-        id: `oi-${i.id}`,
-        product_id: i.product_id,
-        product_name: i.product_name,
-        product_price: i.product_price,
-        quantity: i.quantity,
-        total_price: i.line_total,
-      })) : [
-        {
-          id: `oi-${Date.now()}`,
-          product_id: "prod-1",
-          product_name: "Handmade Regional Craft Order",
-          quantity: 1,
-          unit_price: fallbackCart.total_amount || 1850.0,
-          total_price: fallbackCart.total_amount || 1850.0,
-        }
-      ],
+      items: itemsList,
     };
 
-    // Store in fallback orders so both vendor and customer immediately see it
-    fallbackOrders.unshift(newOrder);
+    // Store in persisted orders so both vendor and customer immediately see it across reloads
+    const allOrders = [newOrder, ...getStoredOrders().filter((o) => o.id !== newOrder.id)];
+    persistOrders(allOrders);
 
     // Clear cart
     fallbackCart.items = [];
