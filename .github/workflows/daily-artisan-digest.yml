@@ -35,3 +35,4 @@ jobs:
           name: daily-artisan-digest
           path: reports/latest_artisan_digest.md
           retention-days: 14
+

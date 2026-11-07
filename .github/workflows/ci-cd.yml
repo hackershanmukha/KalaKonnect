@@ -63,3 +63,4 @@ jobs:
         run: |
           echo "KalaConnect CI/CD verification succeeded for commit ${{ github.sha }}."
           echo "Repository is ready for zero-downtime deployment on Render & Vercel."
+
