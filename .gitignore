@@ -47,6 +47,12 @@ pnpm-debug.log*
 lerna-debug.log*
 *.log
 
+# Environment variables
+.env
+.env.local
+.env.*.local
+!.env.example
+
 # Editor & OS
 .DS_Store
 Thumbs.db
